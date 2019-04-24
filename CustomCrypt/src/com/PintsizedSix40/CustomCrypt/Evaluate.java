@@ -9,16 +9,23 @@ public class Evaluate {
 	String exp;
 	String[] keys;
 	String in;
+	String oldexp;
 	public Evaluate(String n, String[] k, String e) {
 		in = n;
 		keys = k;
 		exp = e;
+		oldexp = e;
 	}
 	
 	private void replaceKeys() {
 		for(int i = 0; i < keys.length; i++) {
 			exp = exp.replaceAll("%k"+(i+1)+"%", keys[i]);
 		}
+	}
+	
+	public void changeInput(String inp) {
+		in = inp;
+		exp = oldexp;
 	}
 	
 	private void replaceInput() {
