@@ -18,6 +18,7 @@ public class FrameHandler {
 		handlers.put("Custom", Algorithms.Custom);
 		handlers.put("AES", Algorithms.AES);
 		handlers.put("3DES", Algorithms.DES);
+		handlers.put("Blowfish", Algorithms.Blowfish);
 		
 		
 		JTextPane cc = new JTextPane();

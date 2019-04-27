@@ -1,13 +1,6 @@
 package com.PintsizedSix40.CustomCrypt;
 
-import java.io.UnsupportedEncodingException;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -20,13 +13,11 @@ public static CryptHandler Pass = new CryptHandler() {
 
 	@Override
 	public String encrypt(String key, String in) {
-		// TODO Auto-generated method stub
 		return in;
 	}
 
 	@Override
 	public String decrypt(String key, String in) {
-		// TODO Auto-generated method stub
 		return in;
 	}
 	
@@ -82,8 +73,7 @@ public static CryptHandler AES = new CryptHandler() {
 			cipher.init(Cipher.ENCRYPT_MODE, secret, new IvParameterSpec(iv));
 			return java.util.Base64.getEncoder().encodeToString(cipher.doFinal(in.getBytes("UTF-8")));
 			
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -103,8 +93,7 @@ public static CryptHandler AES = new CryptHandler() {
 			cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
 			return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(in)), "UTF-8");
 			
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -121,15 +110,13 @@ public static CryptHandler DES = new CryptHandler() {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
 			byte[] salt = new byte[8];
-			byte[] iv = new byte[16];
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey secret = factory.generateSecret(spec);
 			Cipher cipher = Cipher.getInstance("PBEWithMD5AndTripleDES");
 			cipher.init(Cipher.ENCRYPT_MODE, secret, new PBEParameterSpec(salt, 100));
 			return java.util.Base64.getEncoder().encodeToString(cipher.doFinal(in.getBytes("UTF-8")));
 			
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -141,15 +128,47 @@ public static CryptHandler DES = new CryptHandler() {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
 			byte[] salt = new byte[8];
-			byte[] iv = new byte[16];
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey secret = factory.generateSecret(spec);
 			Cipher cipher = Cipher.getInstance("PBEWithMD5AndTripleDES");
 			cipher.init(Cipher.DECRYPT_MODE, secret, new PBEParameterSpec(salt, 100));
 			return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(in)), "UTF-8");
 			
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+};
+
+
+public static CryptHandler Blowfish = new CryptHandler() {
+
+	@Override
+	public String encrypt(String key, String in) {
+		try {
+			SecretKeySpec skey = new SecretKeySpec(key.getBytes(), "Blowfish");
+		     Cipher cipher = Cipher.getInstance("Blowfish");
+		     cipher.init(Cipher.ENCRYPT_MODE, skey);
+			return java.util.Base64.getEncoder().encodeToString(cipher.doFinal(in.getBytes("UTF-8")));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String decrypt(String key, String in) {
+		try {
+			SecretKeySpec skey = new SecretKeySpec(key.getBytes(), "Blowfish");
+		     Cipher cipher = Cipher.getInstance("Blowfish");
+		     cipher.init(Cipher.DECRYPT_MODE, skey);
+			return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(in)), "UTF-8");
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
