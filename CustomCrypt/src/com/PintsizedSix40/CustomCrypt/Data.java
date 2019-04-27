@@ -4,7 +4,6 @@ import net.objecthunter.exp4j.operator.Operator;
 
 public class Data {
 
-	public static String prevOutput = "0000";
 	public static int iteration = 1;
 	
 	public static Operator a = new Operator("$", 2, true, Operator.PRECEDENCE_DIVISION-1) {
@@ -46,13 +45,5 @@ public class Data {
 		}
 		
 	};
-	
-	public static Operator p = new Operator("&", 2, true, Operator.PRECEDENCE_POWER) {
-		@Override
-        public double apply(double... values) {
-			return Math.pow(Math.E, Math.log(values[1])/values[0]);
-			
-		}
-		
-	};
+
 }

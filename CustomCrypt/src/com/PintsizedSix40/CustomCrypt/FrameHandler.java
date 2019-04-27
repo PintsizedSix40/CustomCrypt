@@ -16,6 +16,8 @@ public class FrameHandler {
 		
 		handlers.put("PASS", Algorithms.Pass);
 		handlers.put("Custom", Algorithms.Custom);
+		handlers.put("AES", Algorithms.AES);
+		handlers.put("3DES", Algorithms.DES);
 		
 		
 		JTextPane cc = new JTextPane();
@@ -98,7 +100,7 @@ public class FrameHandler {
 				for(int i = 0; i < 18; i++) {
 					val = handlers.get(combos[i].getSelectedItem().toString()).encrypt(text[i].getText(), val);
 				}
-				out.setText(val.replaceAll("\\n", "").replaceAll(" ", ""));
+				out.setText(val.replaceAll("\\n", ""));
 				
 			}
 			
@@ -114,11 +116,10 @@ public class FrameHandler {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String val = input.getText();
-				for(int i = 0; i < 18; i++) {
+				for(int i = 17; i > -1; i--) {
 					val = handlers.get(combos[i].getSelectedItem().toString()).decrypt(text[i].getText(), val);
 				}
-				out.setText(val.replaceAll("\\n", "").replaceAll(" ", ""));
-				
+				out.setText(val.replaceAll("\\n", ""));			
 			}
 			
 		});
@@ -187,7 +188,7 @@ public class FrameHandler {
 		algos.addItem("AES");
 		algos.addItem("PDS");
 		algos.addItem("3DES");
-		algos.addItem("Twofish");
+		algos.addItem("Blowfish");
 		algos.addItem("PAS");
 		algos.addItem("Custom");
 		algos.setBounds(30, 175+(25*num), 100, 25);

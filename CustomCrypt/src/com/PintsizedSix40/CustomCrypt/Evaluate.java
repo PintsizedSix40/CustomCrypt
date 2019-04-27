@@ -8,9 +8,9 @@ public class Evaluate {
 
 	String exp;
 	String[] keys;
-	String in;
+	int in;
 	String oldexp;
-	public Evaluate(String n, String[] k, String e) {
+	public Evaluate(int n, String[] k, String e) {
 		in = n;
 		keys = k;
 		exp = e;
@@ -23,7 +23,7 @@ public class Evaluate {
 		}
 	}
 	
-	public void changeInput(String inp) {
+	public void changeInput(int inp) {
 		in = inp;
 		exp = oldexp;
 	}
@@ -35,26 +35,26 @@ public class Evaluate {
 		try{exp = exp.replaceAll("%i2%", Character.toString(in.charAt(1)));} catch(Exception e) {exp = exp.replaceAll("%i2%", "0");}
 		try{exp = exp.replaceAll("%i3%", Character.toString(in.charAt(2)));} catch(Exception e) {exp = exp.replaceAll("%i3%", "0");}
 		try{exp = exp.replaceAll("%i4%", Character.toString(in.charAt(3)));} catch(Exception e) {exp = exp.replaceAll("%i4%", "0");}*/
-		exp = exp.replaceAll("%i%", in); 
+		exp = exp.replaceAll("%i%", Integer.toString(in)); 
 		
 		////
 		/*try{exp = exp.replaceAll("%p1%", Character.toString(Data.prevOutput.charAt(0)));} catch(Exception e) {exp = exp.replaceAll("%p1%", "0");}
 		try{exp = exp.replaceAll("%p2%", Character.toString(Data.prevOutput.charAt(1)));} catch(Exception e) {exp = exp.replaceAll("%p2%", "0");}
 		try{exp = exp.replaceAll("%p3%", Character.toString(Data.prevOutput.charAt(2)));} catch(Exception e) {exp = exp.replaceAll("%p3%", "0");}
 		try{exp = exp.replaceAll("%p4%", Character.toString(Data.prevOutput.charAt(3)));} catch(Exception e) {exp = exp.replaceAll("%p4%", "0");}*/
-		exp = exp.replaceAll("%p%", Data.prevOutput);
+		//exp = exp.replaceAll("%p%", Data.prevOutput);
 		
 	}
 	private void replace() {
 		replaceInput();
 		replaceKeys();
+		exp = exp.replaceAll("%t%", Integer.toString(Data.iteration));
 	}
 	public int Evaluate() {
 		replace();
-		Expression e = new ExpressionBuilder(exp).operator(Data.p)
+		Expression e = new ExpressionBuilder(exp)
 	            .build();
 		int result = (int) e.evaluate();
-		Data.prevOutput = Integer.toString(result);
 		Data.iteration++;
 		return result;
 	}
@@ -66,10 +66,9 @@ public class Evaluate {
 		exp = exp.replaceAll("\\+", "#");
 		exp = exp.replaceAll("\\^", "&");
 		replace();
-		Expression e = new ExpressionBuilder(exp).operator(Data.p, Data.m, Data.d, Data.s, Data.a)
+		Expression e = new ExpressionBuilder(exp).operator(Data.m, Data.d, Data.s, Data.a)
         .build();
 		int result = (int) e.evaluate();
-		Data.prevOutput = Integer.toString(result);
 		Data.iteration++;
 		return result;
 	}
