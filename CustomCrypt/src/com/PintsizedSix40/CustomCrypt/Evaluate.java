@@ -2,7 +2,6 @@ package com.PintsizedSix40.CustomCrypt;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import net.objecthunter.exp4j.operator.Operator;
 
 public class Evaluate {
 
@@ -17,38 +16,15 @@ public class Evaluate {
 		oldexp = e;
 	}
 	
-	private void replaceKeys() {
-		for(int i = 0; i < keys.length; i++) {
-			exp = exp.replaceAll("%k"+(i+1)+"%", keys[i]);
-		}
-	}
-	
 	public void changeInput(int inp) {
 		in = inp;
 		exp = oldexp;
 	}
-	
-	private void replaceInput() {
-		//in = String.format("d%04", Integer.parseInt(in));
-		//Data.prevOutput = String.format("d%04", Integer.parseInt(Data.prevOutput));
-		/*try{exp = exp.replaceAll("%i1%", Character.toString(in.charAt(0)));} catch(Exception e) {exp = exp.replaceAll("%i1%", "0");}
-		try{exp = exp.replaceAll("%i2%", Character.toString(in.charAt(1)));} catch(Exception e) {exp = exp.replaceAll("%i2%", "0");}
-		try{exp = exp.replaceAll("%i3%", Character.toString(in.charAt(2)));} catch(Exception e) {exp = exp.replaceAll("%i3%", "0");}
-		try{exp = exp.replaceAll("%i4%", Character.toString(in.charAt(3)));} catch(Exception e) {exp = exp.replaceAll("%i4%", "0");}*/
-		exp = exp.replaceAll("%i%", Integer.toString(in)); 
-		
-		////
-		/*try{exp = exp.replaceAll("%p1%", Character.toString(Data.prevOutput.charAt(0)));} catch(Exception e) {exp = exp.replaceAll("%p1%", "0");}
-		try{exp = exp.replaceAll("%p2%", Character.toString(Data.prevOutput.charAt(1)));} catch(Exception e) {exp = exp.replaceAll("%p2%", "0");}
-		try{exp = exp.replaceAll("%p3%", Character.toString(Data.prevOutput.charAt(2)));} catch(Exception e) {exp = exp.replaceAll("%p3%", "0");}
-		try{exp = exp.replaceAll("%p4%", Character.toString(Data.prevOutput.charAt(3)));} catch(Exception e) {exp = exp.replaceAll("%p4%", "0");}*/
-		//exp = exp.replaceAll("%p%", Data.prevOutput);
-		
-	}
 	private void replace() {
-		replaceInput();
-		replaceKeys();
-		exp = exp.replaceAll("%t%", Integer.toString(Data.iteration));
+		exp = exp.replaceAll("%t%", Integer.toString(Data.iteration)).replaceAll("%i%", Integer.toString(in));
+		for(int i = 0; i < keys.length; i++) {
+			exp = exp.replaceAll("%k"+(i+1)+"%", keys[i]);
+		}
 	}
 	public int Evaluate() {
 		replace();
@@ -60,11 +36,7 @@ public class Evaluate {
 	}
 	
 	public int DeEvaluate() {
-		exp = exp.replaceAll("\\*", ">");
-		exp = exp.replaceAll("/", "<");
-		exp = exp.replaceAll("-", "\\$");
-		exp = exp.replaceAll("\\+", "#");
-		exp = exp.replaceAll("\\^", "&");
+		exp = exp.replaceAll("\\*", ">").replaceAll("/", "<").replaceAll("-", "\\$").replaceAll("\\+", "#").replaceAll("\\^", "&");
 		replace();
 		Expression e = new ExpressionBuilder(exp).operator(Data.m, Data.d, Data.s, Data.a)
         .build();
