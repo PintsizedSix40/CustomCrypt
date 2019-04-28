@@ -1,12 +1,19 @@
 package com.PintsizedSix40.CustomCrypt;
 
+import java.awt.FileDialog;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import javax.swing.*;
-import javax.swing.plaf.BorderUIResource;
+
+import org.json.JSONArray;
 
 public class FrameHandler {
 
@@ -134,6 +141,38 @@ public class FrameHandler {
 				JButton sa = new JButton();
 				sa.setText("Save");
 				sa.setBounds(90, 100, 100, 50);
+				sa.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+					    FileDialog dialog = new FileDialog((Frame)null, "Select File to Save");
+					    dialog.setMode(FileDialog.SAVE);
+					    dialog.setFile("*.ccd");
+					    dialog.setVisible(true);
+					    
+					    String use = dialog.getDirectory()+dialog.getFile();
+					    if(!use.endsWith(".ccd"))
+					    use+=".ccd";
+					    
+						JSONArray main = new JSONArray();
+						for(int i = 0; i < combos.length; i++) {
+							JSONArray sub = new JSONArray();
+							sub.put(combos[i].getSelectedItem());
+							sub.put(text[i].getText());
+							main.put(sub);
+						}
+						String enc = Algorithms.AES.encrypt(f.getText(), main.toString());
+					    try {
+					    	FileWriter fileWriter = new FileWriter(use);
+							fileWriter.write(enc);
+							fileWriter.close();
+						} catch (IOException e) {
+							s.dispose();
+						}
+					    s.dispose();
+					    
+					}
+					
+				});
 				
 				s.add(p);
 				s.add(f);
@@ -172,6 +211,35 @@ public class FrameHandler {
 				JButton sa = new JButton();
 				sa.setText("Load");
 				sa.setBounds(90, 100, 100, 50);
+				sa.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						FileDialog dialog = new FileDialog((Frame)null, "Select File to Save");
+					    dialog.setMode(FileDialog.LOAD);
+					    dialog.setFile("*.ccd");
+					    dialog.setVisible(true);
+					    
+					    String use = dialog.getDirectory()+dialog.getFile();
+					    String data = "";
+					    try {
+							data = new String(Files.readAllBytes(Paths.get(use)));
+						} catch (Exception e1) {
+							
+							s.dispose();
+						}
+					    
+					    
+						JSONArray main = new JSONArray(Algorithms.AES.decrypt(f.getText(), data));
+						for(int i = 0; i < main.length(); i++) {
+							JSONArray sub = main.getJSONArray(i);
+							combos[i].setSelectedItem(sub.getString(0));
+							text[i].setText(sub.getString(1));
+						}
+					    s.dispose();
+					}
+					
+				});
 				
 				s.add(p);
 				s.add(f);
