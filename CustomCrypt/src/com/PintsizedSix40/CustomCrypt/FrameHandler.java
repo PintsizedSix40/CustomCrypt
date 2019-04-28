@@ -92,7 +92,7 @@ public class FrameHandler {
 		JTextField[] text = {f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18};
 		
 		JTextPane out = new JTextPane();
-		out.setEditable(false);
+		out.setEditable(true);
 		out.setOpaque(false);
 		out.setBounds(50, 675, 400, 400);
 		out.setFont(new Font(Font.SERIF, 1, 12));
