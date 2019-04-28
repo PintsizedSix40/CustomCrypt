@@ -19,25 +19,17 @@ public class PDataShift {
 	}
 	
 	public void encrypt() {
-		int ran = 0;
-		for(int i = 0; i < time; i++) {
-			if(ran % 2 == 0) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split(""))));
-				poly.shift(Polygon.DIRECTION_LEFT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}
-			if(ran % 2 == 1) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\G....)"))));
-				poly.shift(Polygon.DIRECTION_LEFT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}
-			/*if(ran % 3 == 2) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\G...)"))));
-				poly.shift(Polygon.DIRECTION_LEFT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}*/
-			ran++;
-		}
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\\\G..)"))));
+		poly.encrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
+		
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split(""))));
+		poly.encrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
+		
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\\\G..)"))));
+		poly.encrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
 	}
 	
 	public String get() {
@@ -45,26 +37,17 @@ public class PDataShift {
 	}
 	
 	public void decrypt() {
-		int ran = time-1;
-		for(int i = time-1; i > -1; i--) {
-			poly.setShifted(1);
-			if(ran % 2 == 0) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split(""))));
-				poly.shift(Polygon.DIRECTION_RIGHT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}
-			if(ran % 2 == 1) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\G....)"))));
-				poly.shift(Polygon.DIRECTION_RIGHT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}
-			/*if(ran % 3 == 2) {
-				poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\G...)"))));
-				poly.shift(Polygon.DIRECTION_RIGHT);
-				val = String.join("", poly.get().toArray(new String[0]));
-			}*/
-			ran--;
-		}
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\\\G..)"))));
+		poly.decrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
+		
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split(""))));
+		poly.decrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
+		
+		poly.setValues(new ArrayList<String>(Arrays.asList(val.split("(?<=\\\\G..)"))));
+		poly.decrypt(time);
+		val = String.join("", poly.get().toArray(new String[0]));
 	}
 	
 }
