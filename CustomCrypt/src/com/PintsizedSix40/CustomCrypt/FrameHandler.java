@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 import javax.swing.*;
+import javax.swing.plaf.BorderUIResource;
 
 public class FrameHandler {
 
@@ -40,7 +41,6 @@ public class FrameHandler {
 		JTextField input = new JTextField();
 		input.setEditable(true);
 		input.setBounds(70, 157, 100, 25);
-		in.setOpaque(false);
 		
 		JComboBox<String> o1 = makeBox(1);
 		JComboBox<String> o2 = makeBox(2);
@@ -91,6 +91,7 @@ public class FrameHandler {
 		out.setFont(new Font(Font.SERIF, 1, 12));
 		
 		
+		
 		JButton encrypt = new JButton();
 		encrypt.setText("Encrypt");
 		encrypt.setFont(new Font(Font.SERIF, 3, 20));
@@ -105,6 +106,82 @@ public class FrameHandler {
 				}
 				out.setText(val.replaceAll("\\n", ""));
 				
+			}
+			
+		});
+		
+		JButton save = new JButton();
+		save.setText("Save");
+		save.setFont(new Font(Font.SERIF, 3, 20));
+		save.setBounds(155, 800, 85, 50);
+		save.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame s = new JFrame("Save");
+				
+				JTextPane p = new JTextPane();
+				p.setFont(new Font(Font.SERIF, 3, 20));
+				p.setOpaque(false);
+				p.setText("Pass: ");
+				p.setEditable(false);
+				p.setBounds(50, 25, 50, 50);
+				
+				JTextField f = new JTextField();
+				f.setEditable(true);
+				f.setBounds(100, 30, 125, 25);
+				
+				JButton sa = new JButton();
+				sa.setText("Save");
+				sa.setBounds(90, 100, 100, 50);
+				
+				s.add(p);
+				s.add(f);
+				s.add(sa);
+				
+				s.setResizable(false);
+				s.setLayout(null);
+				s.setSize(300, 200);
+				s.setVisible(true);
+				s.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+			
+		});
+		
+		JButton load = new JButton();
+		load.setText("Load");
+		load.setFont(new Font(Font.SERIF, 3, 20));
+		load.setBounds(255, 800, 85, 50);
+		load.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame s = new JFrame("Load");
+				
+				JTextPane p = new JTextPane();
+				p.setFont(new Font(Font.SERIF, 3, 20));
+				p.setOpaque(false);
+				p.setText("Pass: ");
+				p.setEditable(false);
+				p.setBounds(50, 25, 50, 50);
+				
+				JTextField f = new JTextField();
+				f.setEditable(true);
+				f.setBounds(100, 30, 125, 25);
+				
+				JButton sa = new JButton();
+				sa.setText("Load");
+				sa.setBounds(90, 100, 100, 50);
+				
+				s.add(p);
+				s.add(f);
+				s.add(sa);
+				
+				s.setResizable(false);
+				s.setLayout(null);
+				s.setSize(300, 200);
+				s.setVisible(true);
+				s.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 			
 		});
@@ -175,6 +252,8 @@ public class FrameHandler {
 		genText();
 		
 		frame.add(encrypt);
+		frame.add(save);
+		frame.add(load);
 		frame.add(decrypt);
 		frame.add(out);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
