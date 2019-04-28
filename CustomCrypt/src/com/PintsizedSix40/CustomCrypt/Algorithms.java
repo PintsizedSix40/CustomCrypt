@@ -1,12 +1,11 @@
 package com.PintsizedSix40.CustomCrypt;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashMap;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -15,6 +14,18 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Algorithms {
+public static byte[] salt = new byte[8];
+
+public static void init() {
+	salt[0] = (byte)11;
+	salt[1] = (byte)117;
+	salt[2] = (byte)123;
+	salt[3] = (byte)46;
+	salt[4] = (byte)18;
+	salt[5] = (byte)88;
+	salt[6] = (byte)26;
+	salt[7] = (byte)38;
+}
 
 public static CryptHandler Pass = new CryptHandler() {
 
@@ -88,14 +99,15 @@ public static CryptHandler AES = new CryptHandler() {
 		try {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-			byte[] salt = new byte[8];
+			SecureRandom sr = new SecureRandom();
 			byte[] iv = new byte[16];
+			sr.nextBytes(iv);
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey tmp = factory.generateSecret(spec);
 			SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			cipher.init(Cipher.ENCRYPT_MODE, secret, new IvParameterSpec(iv));
-			return java.util.Base64.getEncoder().encodeToString(cipher.doFinal(in.getBytes("UTF-8")));
+			return Base64.getEncoder().encodeToString(iv)+java.util.Base64.getEncoder().encodeToString(cipher.doFinal(in.getBytes("UTF-8")));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,14 +120,13 @@ public static CryptHandler AES = new CryptHandler() {
 		try {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-			byte[] salt = new byte[8];
-			byte[] iv = new byte[16];
+			byte[] iv = Base64.getDecoder().decode(in.substring(0, 24));
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey tmp = factory.generateSecret(spec);
 			SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
-			return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(in)), "UTF-8");
+			return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(in.substring(24))), "UTF-8");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,7 +144,6 @@ public static CryptHandler DES = new CryptHandler() {
 		try {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
-			byte[] salt = new byte[8];
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey secret = factory.generateSecret(spec);
 			Cipher cipher = Cipher.getInstance("PBEWithMD5AndTripleDES");
@@ -151,7 +161,6 @@ public static CryptHandler DES = new CryptHandler() {
 		try {
 			SecretKeyFactory factory;
 			factory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
-			byte[] salt = new byte[8];
 			KeySpec spec = new PBEKeySpec(key.toCharArray(), salt, 65536, 256);
 			SecretKey secret = factory.generateSecret(spec);
 			Cipher cipher = Cipher.getInstance("PBEWithMD5AndTripleDES");
@@ -222,7 +231,6 @@ public static CryptHandler BDS = new CryptHandler() {
 
 public static CryptHandler BAS = new CryptHandler() {
 
-	//Yes I know my method is horrible
 	@Override
 	public String encrypt(String key, String in) {
 		ArrayList<String> unique = new ArrayList<String>();
