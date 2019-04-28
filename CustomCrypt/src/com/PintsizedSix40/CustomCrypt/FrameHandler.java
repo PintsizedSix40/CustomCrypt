@@ -19,6 +19,8 @@ public class FrameHandler {
 		handlers.put("AES", Algorithms.AES);
 		handlers.put("3DES", Algorithms.DES);
 		handlers.put("Blowfish", Algorithms.Blowfish);
+		handlers.put("BDS", Algorithms.BDS);
+		handlers.put("BAS", Algorithms.BAS);
 		
 		
 		JTextPane cc = new JTextPane();
@@ -187,10 +189,10 @@ public class FrameHandler {
 		algos.setOpaque(false);
 		algos.addItem("PASS");
 		algos.addItem("AES");
-		algos.addItem("PDS");
+		algos.addItem("BDS");
 		algos.addItem("3DES");
 		algos.addItem("Blowfish");
-		algos.addItem("PAS");
+		algos.addItem("BAS");
 		algos.addItem("Custom");
 		algos.setBounds(30, 175+(25*num), 100, 25);
 		return algos;

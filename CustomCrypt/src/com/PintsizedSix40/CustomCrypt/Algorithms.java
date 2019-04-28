@@ -1,6 +1,13 @@
 package com.PintsizedSix40.CustomCrypt;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
@@ -29,7 +36,15 @@ public static CryptHandler Custom = new CryptHandler() {
 	@Override
 	public String encrypt(String key, String in) {
 		String exp = key.split("\\\\", 2)[0];
-		String[] keys = key.split("\\\\", 2)[1].split("|");
+		String[] keys = null;
+		try {
+		keys = key.split("\\\\", 2)[1].split("|");
+		} catch(Exception e) {
+			String[] tmparr = new String[2];
+			tmparr[0] = "1";
+			tmparr[1] = "2";
+			keys = tmparr;
+		}
 		Evaluate ev = new Evaluate((byte)'t', keys, exp);
 		String out = "";
 		Data.iteration = 1;
@@ -37,18 +52,27 @@ public static CryptHandler Custom = new CryptHandler() {
 			ev.changeInput((int)in.charAt(i));
 			out+=(char)ev.Evaluate();
 		}
-		return out;
+			return Base64.getEncoder().encodeToString(out.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@Override
 	public String decrypt(String key, String in) {
 		String exp = key.split("\\\\", 2)[0];
-		String[] keys = key.split("\\\\", 2)[1].split("|");
+		String[] keys = null;
+		String inp = new String(Base64.getDecoder().decode(in), StandardCharsets.UTF_8);
+		try {
+		keys = key.split("\\\\", 2)[1].split("|");
+	} catch(Exception e) {
+		String[] tmparr = new String[2];
+		tmparr[0] = "1";
+		tmparr[1] = "2";
+		keys = tmparr;
+	}
 		Evaluate ev = new Evaluate((byte)'t', keys, exp);
 		Data.iteration = 1;
 		String out = "";
-		for(int i = 0; i < in.length(); i++) {
-			ev.changeInput((int)in.charAt(i));
+		for(int i = 0; i < inp.length(); i++) {
+			ev.changeInput((int)inp.charAt(i));
 			out+=((char)ev.DeEvaluate());
 		}
 		return out;
@@ -174,6 +198,72 @@ public static CryptHandler Blowfish = new CryptHandler() {
 		return null;
 	}
 	
+	
+};
+
+public static CryptHandler BDS = new CryptHandler() {
+
+	@Override
+	public String encrypt(String key, String in) {
+		PDataShift ds = new PDataShift(in, Integer.parseInt(key));
+		ds.encrypt();
+		return ds.get();
+	}
+
+	@Override
+	public String decrypt(String key, String in) {
+		PDataShift ds = new PDataShift(in, Integer.parseInt(key));
+		ds.decrypt();
+		return ds.get();
+	}
+	
+	
+};
+
+public static CryptHandler BAS = new CryptHandler() {
+
+	//Yes I know my method is horrible
+	@Override
+	public String encrypt(String key, String in) {
+		ArrayList<String> unique = new ArrayList<String>();
+		
+		for(int i = 0; i < in.length(); i++) {
+			if(!unique.contains(Character.toString(in.charAt(i)))) {
+				unique.add(Character.toString(in.charAt(i)));
+			}
+			}
+			
+			PDataShift ds = new PDataShift(String.join("", unique.toArray(new String[0])), Integer.parseInt(key));
+			ds.encrypt();
+			ArrayList<String> newa = new ArrayList<String>(Arrays.asList(ds.get().split("")));
+			
+		ArrayList<String> data = new ArrayList<String>(Arrays.asList(in.split("")));
+			for(int y = 0; y < data.size(); y++) {
+				data.set(y, newa.get(unique.indexOf(data.get(y))));
+			}
+			return String.join("", data.toArray(new String[0]));
+		}
+
+	@Override
+	public String decrypt(String key, String in) {
+		ArrayList<String> unique = new ArrayList<String>();
+		
+		for(int i = 0; i < in.length(); i++) {
+			if(!unique.contains(Character.toString(in.charAt(i)))) {
+				unique.add(Character.toString(in.charAt(i)));
+			}
+			}
+			
+			PDataShift ds = new PDataShift(String.join("", unique.toArray(new String[0])), Integer.parseInt(key));
+			ds.decrypt();
+			ArrayList<String> newa = new ArrayList<String>(Arrays.asList(ds.get().split("")));
+			
+			ArrayList<String> data = new ArrayList<String>(Arrays.asList(in.split("")));
+			for(int y = 0; y < data.size(); y++) {
+				data.set(y, newa.get(unique.indexOf(data.get(y))));
+			}
+			return String.join("", data.toArray(new String[0]));
+	}
 	
 };
 
